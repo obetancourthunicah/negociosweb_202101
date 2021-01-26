@@ -12,8 +12,9 @@ $intTasaInteres = 10;
 $intTiempo = 5;
 $fltCN = 0;
 
-$lstAmortizacion = array(1,5,7,9,10,"alpha"=>"A","B","C");
-
+//$lstAmortizacion = array(1,5,7,9,10,"alpha"=>"A","B","C");
+$lstAmortizacion = array();
+// Lista de Diccionarios
 /*
   for (var $i = 0; $i<100; $i++ ){
   
@@ -34,7 +35,7 @@ $lstAmortizacion = array(1,5,7,9,10,"alpha"=>"A","B","C");
  */
 
 
-if (isset($_POST["btnProcesar"])){
+if (isset($_POST["btnProcesar"])) {
   $numCapital = floatval($_POST["numCapital"]);
   $intTasaInteres = intval($_POST["intTasaInteres"]);
   $intTiempo = intval($_POST["intTiempo"]);
@@ -42,10 +43,58 @@ if (isset($_POST["btnProcesar"])){
   $fltTI = $intTasaInteres / 12 / 100;
   $fltN = $intTiempo * 12;
 
+
+
   $fltVF = (1 - ((1 / (1 + $fltTI)) ** $fltN)) / $fltTI;
 
   $fltCN = $numCapital / $fltVF;
 
+  $numCapitalSaldo = $numCapital;
+  for ($i = 0; $i < $fltN; $i++) {
+    $numInteres = $numCapitalSaldo * $fltTI * ($i + 1);
+    $numCapitalCuota = $fltCN - $numInteres;
+    if ($i == $fltN - 1) {
+      $nuevoCapitalSaldo = 0;
+    } else {
+      $nuevoCapitalSaldo = $numCapitalSaldo - $numCapitalCuota;
+    }
+    $lstAmortizacion[] = array(
+      "capital" => $numCapitalSaldo,
+      "cuota" => $fltCN,
+      "abonoCapital" => $numCapitalCuota,
+      "intereses" => $numInteres,
+      "saldo" => $nuevoCapitalSaldo
+    );
+
+    $numCapitalSaldo = $nuevoCapitalSaldo;
+
+    ///  ejemplo 
+    // create table Personas (
+    //   id int(32) primary key,
+    //   name varchar(60) NOT NULL,
+    //   email varchar(128) NOT NULL
+    // )
+
+    // select * from Personas;
+
+    // $Personas = array();
+    // $Personas[]= array(
+    //   "id"=>1,
+    //   "name"=>"Orlando betancourtd",
+    //   "email" => "obetancourthunicah@gmail.com"
+    // );
+    // $Personas[] = array(
+    //   "id" => 2,
+    //   "name" => "Alguien Mas",
+    //   "email" => "fulanito@gmail.com"
+    // );
+    // $Personas[] = array(
+    //   "id" => 3,
+    //   "name" => "La Chimoltrufia",
+    //   "email" => "blanca@gmail.com"
+    // );
+
+  }
 }
 
 
@@ -82,24 +131,64 @@ if (isset($_POST["btnProcesar"])){
     <br />
     <button type="submit" name="btnProcesar">Calcular</button>
   </form>
-  <hr/>
+  <hr />
   <?php
-    if ($fltCN > 0) {
+  if ($fltCN > 0) {
   ?>
-      <div>
-        <h2>Tabla de Amortización</h2>
-        <strong>Cuota Nivelada: <?php echo $fltCN;  ?></strong> 
-      </div>
+    <div>
+      <h2>Tabla de Amortización</h2>
+      <strong>Cuota Nivelada: <?php echo $fltCN;  ?></strong>
+    </div>
   <?php
-    } // $fltCN > 0
+  } // $fltCN > 0
 
-    print_r($lstAmortizacion);
-    echo "<hr/>";
-    foreach ($lstAmortizacion as $lstItem){
-      echo $lstItem . "<br/>";
-    }
-
+  // print_r($lstAmortizacion);
+  // echo "<hr/>";
+  if (count($lstAmortizacion) > 0) {
   ?>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Capital</th>
+          <th>Cuota</th>
+          <th>Abono</th>
+          <th>Interes</th>
+          <th>Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $contador = 1;
+        foreach ($lstAmortizacion as $dicItem) {
+        ?>
+          <tr>
+            <td><?php echo $contador; ?></td>
+            <td><?php echo  $dicItem["capital"]; ?></td>
+            <td><?php echo  $dicItem["cuota"]; ?></td>
+            <td><?php echo  $dicItem["abonoCapital"]; ?></td>
+            <td><?php echo  $dicItem["intereses"]; ?></td>
+            <td><?php echo  $dicItem["saldo"]; ?></td>
+          </tr>
+        <?php
+          $contador++;
+        } //foreach lstAmort 
+        /*
+      "capital" => $numCapitalSaldo,
+      "cuota" => $fltCN,
+      "abonoCapital" => $numCapitalCuota,
+      "intereses" => $numInteres,
+      "saldo" => $nuevoCapitalSaldo
+       */
+        ?>
+      </tbody>
+    </table>
+  <?php
+  } // count
+  ?>
+
+
+
 </body>
 
 </html>
