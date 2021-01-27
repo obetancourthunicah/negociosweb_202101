@@ -45,17 +45,18 @@ if (isset($_POST["btnProcesar"])) {
 
 
 
-  $fltVF = (1 - ((1 / (1 + $fltTI)) ** $fltN)) / $fltTI;
+  $fltVF = (1 - ((1 / ((1 + $fltTI) ** $fltN)))) / $fltTI;
 
   $fltCN = $numCapital / $fltVF;
 
   $numCapitalSaldo = $numCapital;
   for ($i = 0; $i < $fltN; $i++) {
-    $numInteres = $numCapitalSaldo * $fltTI * ($i + 1);
-    $numCapitalCuota = $fltCN - $numInteres;
+    $numInteres = $numCapitalSaldo * $fltTI;
     if ($i == $fltN - 1) {
+      $numCapitalCuota = $numCapitalSaldo - $numInteres;
       $nuevoCapitalSaldo = 0;
     } else {
+      $numCapitalCuota = $fltCN - $numInteres;
       $nuevoCapitalSaldo = $numCapitalSaldo - $numCapitalCuota;
     }
     $lstAmortizacion[] = array(
