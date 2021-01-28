@@ -1,7 +1,7 @@
 <?php 
   require_once "src/flatFunctions.php";
   //require_once "src/math/point.class.php";
-  require "autoloader.php";
+  require_once "autoloader.php";
   use Math\{Point, Line};
   $myPoint = new Point(10,14);
   $myPoint2 = new Point(20, 24);
