@@ -1,6 +1,6 @@
 <?php
 require_once "autoloader.php";
-
+session_start();
 use Tienda\{FProductos, OrdenCompra};
 
 $arrEntradas = array();
@@ -26,6 +26,13 @@ $cmbEntrada = "01";
 $cmbPlatoFuerte = "01";
 $cmbPostre = "00";
 $miOrdenCompra = null;
+
+$misOrdenes = array();
+
+if (isset($_SESSION["misOrdenes"])){
+  $misOrdenes = $_SESSION["misOrdenes"];
+}
+
 //Detectar si hay un clic
 if (isset($_POST["btnEstablecerOrder"])){
   $cmbEntrada = $_POST["cmbEntrada"];
@@ -40,6 +47,9 @@ if (isset($_POST["btnEstablecerOrder"])){
   $miOrdenCompra->addProducto($Entrada);
   $miOrdenCompra->addProducto($PlatoFuerte);
   $miOrdenCompra->addProducto($Postre);
+
+  $misOrdenes[] = $miOrdenCompra;
+  $_SESSION["misOrdenes"] = $misOrdenes;
 }
 
 ?>
@@ -94,6 +104,7 @@ if (isset($_POST["btnEstablecerOrder"])){
 </body>
 <hr/>
 <?php 
+  foreach( $misOrdenes as $miOrdenCompra){
   if($miOrdenCompra){
     echo '<table><tr><th>#</th><th>Producto</th><th>Precio</th></tr>';
     $contador = 1;
@@ -101,7 +112,9 @@ if (isset($_POST["btnEstablecerOrder"])){
       echo sprintf("<tr><td>%d</td><td>%s</td><td>%f</td></tr>", $contador, $producto->getNombre(), $producto->getPrecio());
       $contador++;
     }
-    echo sprintf(" <tr><td>SubTotal: %f</td><td>Impuesto: %f</td><td>Total: %f</td></tr></table>", $miOrdenCompra->getSubtotal(), $miOrdenCompra->getImpuesto(), $miOrdenCompra->getTotal());
+    echo sprintf(" <tr><td>SubTotal: %f</td><td>Impuesto: %f</td><td>Total: %f</td></tr></table><hr/>", $miOrdenCompra->getSubtotal(), $miOrdenCompra->getImpuesto(), $miOrdenCompra->getTotal());
   }
+  }
+
 ?>
 </html>
