@@ -6,10 +6,10 @@ interface ITable{
   public function verificar();
   public function insert($data);
   public function insertBulk($data);
-  public function update($key, $data);
-  public function delete($key);
+  public function update($data);
+  public function delete($data);
   public function find($filters);
-  public function findOne($key);
+  public function findOne($data);
 }
 
 ?>
