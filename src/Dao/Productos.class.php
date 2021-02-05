@@ -69,12 +69,24 @@ class Productos implements ITable{
     query ejecuta DSI -> instucciones que devuelven tuplas "cusores a data" //SELECT
      */
   }
-  public function delete($data){}
+  public function delete($pdata){
+    $data = self::getStructFrom($pdata);
+    $delSQL = "DELETE FROM productos where prdId=%d;";
+    return $this->conn->exec(
+      sprintf($delSQL,$data["prdId"])
+    );
+  }
   public function find($filters){
     $cursor = $this->conn->query("select * from productos;");
-    return $cursor->fetchArray();
+    $productos = array();
+    while($producto = $cursor->fetchArray(SQLITE3_ASSOC)){
+      $productos[] = $producto;
+    }
+    return $productos;
   }
-  public function findOne($data){}
+  public function findOne($data){
+
+  }
 }
 
 ?>
