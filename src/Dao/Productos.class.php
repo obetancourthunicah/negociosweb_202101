@@ -2,36 +2,50 @@
 
 namespace Dao;
 
-class Productos implements ITable{
+/**
+ * Modelo de Datos para Productos
+ */
+class Productos extends Table implements ITable{
   private $conn;
-  
+
+  /**
+   * Obtiene la estructura de la Tabla como un Diccionario
+   *
+   * @return Dictionary
+   */
   public static function getStruct(){
     return array(
       "prdId"=>0, "prdName"=>"", "prdPrice"=>0, "prdStatus"=>"ANL", "prdTax"=>0
     );
   }
-
+//Do it once
   public static function getStructFrom($data){
-    if (is_array($data)){
-      $newData = self::getStruct();
-      foreach($data as $itemKey=>$itemVal){
-          if(isset($newData[$itemKey])){
-            $newData[$itemKey] = $itemVal;
-          }
-      }
-      return $newData;
-    }else{
-      return array();
-    }
+    return self::_getStructFrom(self::getStruct(), $data);
   }
 
+  /**
+   * Instancia del Modelo de Productos
+   */
   public function __construct(){
       $this->conn = Conn::getConn();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function verificar(){
     $sqlDDL = "CREATE TABLE IF NOT EXISTS productos (prdId INTEGER PRIMARY KEY AUTOINCREMENT, prdName TEXT, prdPrice NUMBER, prdStatus TEXT, prdTax NUMBER)";
     $this->conn->exec($sqlDDL);
   }
+
+  /**
+   * Agrega un nuevo Registro a la tabla de productos.
+   *
+   * @param Dictionary $pdata
+   * @return boolean
+   */
   public function insert($pdata){
     $data = self::getStructFrom($pdata);
     $insertSQL = "INSERT INTO productos (prdName, prdPrice, prdStatus, prdTax) VALUES('%s',%f, '%s',%f);";
