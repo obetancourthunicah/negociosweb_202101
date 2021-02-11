@@ -98,8 +98,12 @@ class Productos extends Table implements ITable{
     }
     return $productos;
   }
-  public function findOne($data){
-
+  public function findOne($pdata){
+    $data = self::getStructFrom($pdata);
+    $sqlstr = sprintf("SELECT * from productos where prdId=%d;", $data["prdID"]);
+    $cursor = $this->conn->query($sqlstr);
+    $producto = $cursor->fetchArray(SQLITE3_ASSOC);
+    return $producto;
   }
 }
 
